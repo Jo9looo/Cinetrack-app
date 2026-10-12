@@ -37,16 +37,18 @@ app.use((req, res) => {
 // Centralized error handler
 app.use(errorHandler);
 
-// Start server
-const server = app.listen(ENV.PORT, async () => {
-  console.log(`=======================================================`);
-  console.log(`🎬 CineTrack Backend API Server is running`);
-  console.log(`📍 URL: http://localhost:${ENV.PORT}`);
-  console.log(`🌐 Frontend Allowed Origin: ${ENV.FRONTEND_URL}`);
-  console.log(`=======================================================`);
+// Start server locally (on Vercel Serverless, app is handled directly)
+if (!process.env.VERCEL) {
+  app.listen(ENV.PORT, async () => {
+    console.log(`=======================================================`);
+    console.log(`🎬 CineTrack Backend API Server is running`);
+    console.log(`📍 URL: http://localhost:${ENV.PORT}`);
+    console.log(`🌐 Frontend Allowed Origin: ${ENV.FRONTEND_URL}`);
+    console.log(`=======================================================`);
 
-  // Verify database connectivity on boot
-  await testDatabaseConnection();
-});
+    // Verify database connectivity on boot
+    await testDatabaseConnection();
+  });
+}
 
 export default app;
