@@ -12,6 +12,10 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  ssl:
+    ENV.DB.HOST !== 'localhost' && ENV.DB.HOST !== '127.0.0.1'
+      ? { rejectUnauthorized: false }
+      : undefined,
 });
 
 /**

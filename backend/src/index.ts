@@ -10,7 +10,10 @@ const app = express();
 // Configure CORS for local development and specified frontend origin
 app.use(
   cors({
-    origin: [ENV.FRONTEND_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      // Allow requests from all origins (Vercel, Netlify, localhost)
+      callback(null, true);
+    },
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
