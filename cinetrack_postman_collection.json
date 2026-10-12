@@ -1,0 +1,219 @@
+{
+  "info": {
+    "name": "CineTrack REST API",
+    "_postman_id": "a90f8450-48e2-45a7-96a1-90a6fdb3c072",
+    "description": "Complete Postman collection for testing CineTrack REST API endpoints (Movies & Watchlist) with MySQL database integration.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        },
+        "description": "Verifies that the CineTrack backend API server is online and operational."
+      }
+    },
+    {
+      "name": "Movies",
+      "item": [
+        {
+          "name": "Get Popular Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/movies/popular?page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["movies", "popular"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Retrieves popular movies from TMDB via the backend."
+          }
+        },
+        {
+          "name": "Get Trending Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/movies/trending",
+              "host": ["{{baseUrl}}"],
+              "path": ["movies", "trending"]
+            },
+            "description": "Retrieves daily trending movies from TMDB via the backend."
+          }
+        },
+        {
+          "name": "Search Movies by Title",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/movies/search?q=Inception",
+              "host": ["{{baseUrl}}"],
+              "path": ["movies", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Inception"
+                }
+              ]
+            },
+            "description": "Searches for movies by title using TMDB query."
+          }
+        },
+        {
+          "name": "Get Movie Details by TMDB ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/movies/27205",
+              "host": ["{{baseUrl}}"],
+              "path": ["movies", "27205"]
+            },
+            "description": "Retrieves full movie details including overview, runtime, and genres."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Watchlist",
+      "item": [
+        {
+          "name": "Get All Watchlist Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/watchlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["watchlist"]
+            },
+            "description": "Retrieves all saved watchlist movies from MySQL database."
+          }
+        },
+        {
+          "name": "Get Watchlist Filtered by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/watchlist?status=Want to Watch",
+              "host": ["{{baseUrl}}"],
+              "path": ["watchlist"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Want to Watch"
+                }
+              ]
+            },
+            "description": "Retrieves watchlist items filtered by status ('Want to Watch', 'Watching', or 'Watched')."
+          }
+        },
+        {
+          "name": "Get Watchlist Live Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/watchlist/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["watchlist", "stats"]
+            },
+            "description": "Calculates real-time count of total, want to watch, watching, and watched movies directly from database records."
+          }
+        },
+        {
+          "name": "Check if Movie is in Watchlist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/watchlist/check/27205",
+              "host": ["{{baseUrl}}"],
+              "path": ["watchlist", "check", "27205"]
+            },
+            "description": "Checks if a specific TMDB movie ID is currently saved in the database."
+          }
+        },
+        {
+          "name": "Add Movie to Watchlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tmdbId\": 27205,\n  \"title\": \"Inception\",\n  \"posterPath\": \"https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg\",\n  \"releaseDate\": \"2010-07-15\",\n  \"rating\": 8.4,\n  \"status\": \"Want to Watch\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/watchlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["watchlist"]
+            },
+            "description": "Adds a movie to the watchlist using parameterized SQL insertion with duplicate check."
+          }
+        },
+        {
+          "name": "Update Viewing Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Watched\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/watchlist/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["watchlist", "1"]
+            },
+            "description": "Updates a movie's viewing status to 'Want to Watch', 'Watching', or 'Watched'."
+          }
+        },
+        {
+          "name": "Remove Movie from Watchlist",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/watchlist/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["watchlist", "1"]
+            },
+            "description": "Deletes a movie record from the MySQL watchlist table."
+          }
+        }
+      ]
+    }
+  ]
+}
